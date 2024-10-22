@@ -1,0 +1,11 @@
+/Users/limjaeseung/Desktop/ord/target/release/deps/libbip39-09c3ea84d0284c62.rmeta: /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/lib.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/internal_macros.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/mod.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/english.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/pbkdf2.rs
+
+/Users/limjaeseung/Desktop/ord/target/release/deps/libbip39-09c3ea84d0284c62.rlib: /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/lib.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/internal_macros.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/mod.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/english.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/pbkdf2.rs
+
+/Users/limjaeseung/Desktop/ord/target/release/deps/bip39-09c3ea84d0284c62.d: /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/lib.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/internal_macros.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/mod.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/english.rs /Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/pbkdf2.rs
+
+/Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/lib.rs:
+/Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/internal_macros.rs:
+/Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/mod.rs:
+/Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/language/english.rs:
+/Users/limjaeseung/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bip39-2.0.0/src/pbkdf2.rs:

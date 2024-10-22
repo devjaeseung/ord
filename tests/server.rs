@@ -178,6 +178,53 @@ fn address_page_shows_aggregated_runes_balance() {
 }
 
 #[test]
+fn address_page_shows_aggregated_inscriptions() {
+  let core = mockcore::builder().network(Network::Regtest).build();
+  let ord =
+    TestServer::spawn_with_args(&core, &["--index-runes", "--index-addresses", "--regtest"]);
+
+  create_wallet(&core, &ord);
+
+  let (inscription_id_1, _reveal) = inscribe(&core, &ord);
+
+  let address = "bcrt1qs758ursh4q9z627kt3pp5yysm78ddny6txaqgw";
+
+  CommandBuilder::new(format!(
+    "--chain regtest --index-runes wallet send --fee-rate 1 {address} {inscription_id_1}",
+  ))
+  .core(&core)
+  .ord(&ord)
+  .stdout_regex(".*")
+  .run_and_deserialize_output::<Output>();
+
+  core.mine_blocks(1);
+
+  let (inscription_id_2, _reveal) = inscribe(&core, &ord);
+
+  CommandBuilder::new(format!(
+    "--chain regtest --index-runes wallet send --fee-rate 1 {address} {inscription_id_2}",
+  ))
+  .core(&core)
+  .ord(&ord)
+  .stdout_regex(".*")
+  .run_and_deserialize_output::<Output>();
+
+  core.mine_blocks(1);
+
+  ord.assert_response_regex(
+    format!("/address/{address}"),
+      r".*
+<dl>.*
+  <dt>inscriptions</dt>
+  <dd class=thumbnails>
+    <a href=/inscription/[[:xdigit:]]{64}i\d><iframe .* src=/preview/[[:xdigit:]]{64}i\d></iframe></a>
+    <a href=/inscription/[[:xdigit:]]{64}i\d><iframe .* src=/preview/[[:xdigit:]]{64}i\d></iframe></a>
+  </dd>.*"
+    ,
+  );
+}
+
+#[test]
 fn inscription_page() {
   let core = mockcore::spawn();
   let ord = TestServer::spawn(&core);
@@ -223,7 +270,7 @@ fn inscription_page() {
   <dt>reveal transaction</dt>
   <dd><a class=monospace href=/tx/{reveal}>{reveal}</a></dd>
   <dt>location</dt>
-  <dd class=monospace>{reveal}:0:0</dd>
+  <dd><a class=monospace href=/satpoint/{reveal}:0:0>{reveal}:0:0</a></dd>
   <dt>output</dt>
   <dd><a class=monospace href=/output/{reveal}:0>{reveal}:0</a></dd>
   <dt>offset</dt>
@@ -315,7 +362,7 @@ fn inscription_page_after_send() {
   ord.assert_response_regex(
     format!("/inscription/{inscription}"),
     format!(
-      r".*<h1>Inscription 0</h1>.*<dt>location</dt>\s*<dd class=monospace>{reveal}:0:0</dd>.*",
+      r".*<h1>Inscription 0</h1>.*<dt>location</dt>\s*<dd><a class=monospace href=/satpoint/{reveal}:0:0>{reveal}:0:0</a></dd>.*",
     ),
   );
 
@@ -333,7 +380,7 @@ fn inscription_page_after_send() {
   ord.assert_response_regex(
     format!("/inscription/{inscription}"),
     format!(
-      r".*<h1>Inscription 0</h1>.*<dt>address</dt>\s*<dd class=monospace><a href=/address/bc1qcqgs2pps4u4yedfyl5pysdjjncs8et5utseepv>bc1qcqgs2pps4u4yedfyl5pysdjjncs8et5utseepv</a></dd>.*<dt>location</dt>\s*<dd class=monospace>{txid}:0:0</dd>.*",
+      r".*<h1>Inscription 0</h1>.*<dt>address</dt>\s*<dd class=monospace><a href=/address/bc1qcqgs2pps4u4yedfyl5pysdjjncs8et5utseepv>bc1qcqgs2pps4u4yedfyl5pysdjjncs8et5utseepv</a></dd>.*<dt>location</dt>\s*<dd><a class=monospace href=/satpoint/{txid}:0:0>{txid}:0:0</a></dd>.*",
     ),
   )
 }
@@ -447,8 +494,11 @@ fn recursive_inscription_endpoint() {
     "application/json"
   );
 
-  let inscription_recursive_json: api::InscriptionRecursive =
+  let mut inscription_recursive_json: api::InscriptionRecursive =
     serde_json::from_str(&response.text().unwrap()).unwrap();
+
+  assert_regex_match!(inscription_recursive_json.address.unwrap(), r"bc1p.*");
+  inscription_recursive_json.address = None;
 
   pretty_assert_eq!(
     inscription_recursive_json,
@@ -469,6 +519,7 @@ fn recursive_inscription_endpoint() {
       },
       timestamp: 2,
       value: Some(10000),
+      address: None,
     }
   )
 }
@@ -624,7 +675,7 @@ fn inscription_transactions_are_stored_with_transaction_index() {
 
   let (_inscription, reveal) = inscribe(&core, &ord);
 
-  let coinbase = core.tx(1, 0).txid();
+  let coinbase = core.tx(1, 0).compute_txid();
 
   assert_eq!(
     ord.request(format!("/tx/{reveal}")).status(),

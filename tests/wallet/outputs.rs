@@ -9,7 +9,7 @@ fn outputs() {
   create_wallet(&core, &ord);
 
   let coinbase_tx = &core.mine_blocks_with_subsidy(1, 1_000_000)[0].txdata[0];
-  let outpoint = OutPoint::new(coinbase_tx.txid(), 0);
+  let outpoint = OutPoint::new(coinbase_tx.compute_txid(), 0);
   let amount = coinbase_tx.output[0].value;
 
   let output = CommandBuilder::new("wallet outputs")
@@ -18,7 +18,8 @@ fn outputs() {
     .run_and_deserialize_output::<Vec<Output>>();
 
   assert_eq!(output[0].output, outpoint);
-  assert_eq!(output[0].amount, amount);
+  assert_eq!(output[0].amount, amount.to_sat());
+  assert!(output[0].sat_ranges.is_none());
 }
 
 #[test]
@@ -30,7 +31,7 @@ fn outputs_includes_locked_outputs() {
   create_wallet(&core, &ord);
 
   let coinbase_tx = &core.mine_blocks_with_subsidy(1, 1_000_000)[0].txdata[0];
-  let outpoint = OutPoint::new(coinbase_tx.txid(), 0);
+  let outpoint = OutPoint::new(coinbase_tx.compute_txid(), 0);
   let amount = coinbase_tx.output[0].value;
 
   core.lock(outpoint);
@@ -41,7 +42,8 @@ fn outputs_includes_locked_outputs() {
     .run_and_deserialize_output::<Vec<Output>>();
 
   assert_eq!(output[0].output, outpoint);
-  assert_eq!(output[0].amount, amount);
+  assert_eq!(output[0].amount, amount.to_sat());
+  assert!(output[0].sat_ranges.is_none());
 }
 
 #[test]
@@ -53,7 +55,7 @@ fn outputs_includes_unbound_outputs() {
   create_wallet(&core, &ord);
 
   let coinbase_tx = &core.mine_blocks_with_subsidy(1, 1_000_000)[0].txdata[0];
-  let outpoint = OutPoint::new(coinbase_tx.txid(), 0);
+  let outpoint = OutPoint::new(coinbase_tx.compute_txid(), 0);
   let amount = coinbase_tx.output[0].value;
 
   core.lock(outpoint);
@@ -64,7 +66,8 @@ fn outputs_includes_unbound_outputs() {
     .run_and_deserialize_output::<Vec<Output>>();
 
   assert_eq!(output[0].output, outpoint);
-  assert_eq!(output[0].amount, amount);
+  assert_eq!(output[0].amount, amount.to_sat());
+  assert!(output[0].sat_ranges.is_none());
 }
 
 #[test]
@@ -76,7 +79,7 @@ fn outputs_includes_sat_ranges() {
   create_wallet(&core, &ord);
 
   let coinbase_tx = &core.mine_blocks_with_subsidy(1, 1_000_000)[0].txdata[0];
-  let outpoint = OutPoint::new(coinbase_tx.txid(), 0);
+  let outpoint = OutPoint::new(coinbase_tx.compute_txid(), 0);
   let amount = coinbase_tx.output[0].value;
 
   let output = CommandBuilder::new("wallet outputs --ranges")
@@ -85,6 +88,9 @@ fn outputs_includes_sat_ranges() {
     .run_and_deserialize_output::<Vec<Output>>();
 
   assert_eq!(output[0].output, outpoint);
-  assert_eq!(output[0].amount, amount);
-  assert_eq!(output[0].sat_ranges, vec!["5000000000-5001000000"]);
+  assert_eq!(output[0].amount, amount.to_sat());
+  assert_eq!(
+    output[0].sat_ranges,
+    Some(vec!["5000000000-5001000000".to_string()])
+  );
 }

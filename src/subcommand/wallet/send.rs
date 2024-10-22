@@ -22,7 +22,7 @@ pub struct Output {
   pub outgoing: Outgoing,
   pub fee: u64,
 }
-
+//
 impl Send {
   pub(crate) fn run(self, wallet: Wallet) -> SubcommandResult {
     let address = self

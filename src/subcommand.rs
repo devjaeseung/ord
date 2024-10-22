@@ -55,28 +55,76 @@ pub(crate) enum Subcommand {
 
 impl Subcommand {
   pub(crate) fn run(self, settings: Settings) -> SubcommandResult {
+    println!("[subcommand.rs] Running subcommand: {:?}", self);
+
     match self {
-      Self::Balances => balances::run(settings),
-      Self::Decode(decode) => decode.run(settings),
-      Self::Env(env) => env.run(),
-      Self::Epochs => epochs::run(),
-      Self::Find(find) => find.run(settings),
-      Self::Index(index) => index.run(settings),
-      Self::List(list) => list.run(settings),
-      Self::Parse(parse) => parse.run(),
-      Self::Runes => runes::run(settings),
+      Self::Balances => {
+        println!("[subcommand.rs] Balances subcommand");
+        balances::run(settings)
+      }
+      Self::Decode(decode) => {
+        println!("[subcommand.rs] Decode subcommand");
+        decode.run(settings)
+      }
+      Self::Env(env) => {
+        println!("[subcommand.rs] Env subcommand");
+        env.run()
+      }
+      Self::Epochs => {
+        println!("[subcommand.rs] Epochs subcommand");
+        epochs::run()
+      }
+      Self::Find(find) => {
+        println!("[subcommand.rs] Find subcommand");
+        find.run(settings)
+      }
+      Self::Index(index) => {
+        println!("[subcommand.rs] Index subcommand");
+        index.run(settings)
+      }
+      Self::List(list) => {
+        println!("[subcommand.rs] List subcommand");
+        list.run(settings)
+      }
+      Self::Parse(parse) => {
+        println!("[subcommand.rs] Parse subcommand");
+        parse.run()
+      }
+      Self::Runes => {
+        println!("[subcommand.rs] Runes subcommand");
+        runes::run(settings)
+      }
       Self::Server(server) => {
+        println!("[subcommand.rs] Server subcommand");
         let index = Arc::new(Index::open(&settings)?);
         let handle = axum_server::Handle::new();
         LISTENERS.lock().unwrap().push(handle.clone());
         server.run(settings, index, handle)
       }
-      Self::Settings => settings::run(settings),
-      Self::Subsidy(subsidy) => subsidy.run(),
-      Self::Supply => supply::run(),
-      Self::Teleburn(teleburn) => teleburn.run(),
-      Self::Traits(traits) => traits.run(),
-      Self::Wallet(wallet) => wallet.run(settings),
+      Self::Settings => {
+        println!("[subcommand.rs] Settings subcommand");
+        settings::run(settings)
+      }
+      Self::Subsidy(subsidy) => {
+        println!("[subcommand.rs] Subsidy subcommand");
+        subsidy.run()
+      }
+      Self::Supply => {
+        println!("[subcommand.rs] Supply subcommand");
+        supply::run()
+      }
+      Self::Teleburn(teleburn) => {
+        println!("[subcommand.rs] Teleburn subcommand");
+        teleburn.run()
+      }
+      Self::Traits(traits) => {
+        println!("[subcommand.rs] Traits subcommand");
+        traits.run()
+      }
+      Self::Wallet(wallet) => {
+        println!("[subcommand.rs] Wallet subcommand");
+        wallet.run(settings)
+      }
     }
   }
 }

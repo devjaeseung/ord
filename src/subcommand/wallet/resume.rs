@@ -72,3 +72,4 @@ impl Resume {
     Ok(Some(Box::new(ResumeOutput { etchings }) as Box<dyn Output>))
   }
 }
+//

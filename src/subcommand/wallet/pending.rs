@@ -1,5 +1,5 @@
 use super::*;
-
+//
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct PendingOutput {
   pub commit: Txid,
@@ -26,3 +26,4 @@ impl Pending {
     Ok(Some(Box::new(etchings) as Box<dyn Output>))
   }
 }
+//

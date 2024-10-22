@@ -13,3 +13,4 @@ pub(crate) fn run() -> SubcommandResult {
 
   Ok(Some(Box::new(Output { starting_sats })))
 }
+//

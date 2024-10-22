@@ -21,6 +21,10 @@ pub(crate) struct Arguments {
 
 impl Arguments {
   pub(crate) fn run(self) -> SnafuResult<Option<Box<dyn subcommand::Output>>> {
+
+    println!("[arguments.rs] Running with options: {:?}", self.options);
+    println!("[arguments.rs] Subcommand: {:?}", self.subcommand);
+
     let mut env: BTreeMap<String, String> = BTreeMap::new();
 
     for (variable, value) in env::vars_os() {
@@ -45,5 +49,12 @@ impl Arguments {
     }
 
     Ok(self.subcommand.run(Settings::load(self.options)?)?)
+    // let settings = Settings::load(self.options)?;
+    // println!("[arguments.rs] Loaded settings: {:?}", settings);
+    //
+    // let result = self.subcommand.run(settings)?;
+    // println!("[arguments.rs] Subcommand result: {:?}", result);
+    //
+    // Ok(result)
   }
 }

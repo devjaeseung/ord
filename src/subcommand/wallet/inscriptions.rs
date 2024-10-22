@@ -1,5 +1,5 @@
 use super::*;
-
+///
 #[derive(Serialize, Deserialize)]
 pub struct Output {
   pub inscription: InscriptionId,

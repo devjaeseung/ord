@@ -2,30 +2,80 @@
 
 # see `ord --help` for setting documentation
 
-bitcoin_data_dir: /var/lib/bitcoin
-bitcoin_rpc_password: bar
-bitcoin_rpc_url: https://localhost:8000
-bitcoin_rpc_username: foo
-chain: mainnet
+# 비트코인 데이터 디렉토리 경로
+#bitcoin_data_dir: /Users/limjaeseung/Library/Application Support/Bitcoin
+bitcoin_data_dir: http://43.201.49.246/home/ubuntu/.bitcoin
+
+# 비트코인 RPC 서버 비밀번호
+# bitcoin_rpc_password: jaeseung
+bitcoin_rpc_password: regtest
+
+# 비트코인 RPC 서버 URL (로컬호스트에서 18443 포트 사용)
+# bitcoin_rpc_url: http://localhost:18443
+bitcoin_rpc_url: http://43.201.49.246:8332
+
+# 비트코인 RPC 서버 사용자 이름
+# bitcoin_rpc_username: jaeseung
+bitcoin_rpc_username: regtest
+
+
+# 사용할 비트코인 네트워크 (regtest는 테스트를 위한 로컬 비트코인 네트워크)
+chain: regtest
+
+# 특정 작업을 커밋하는 간격 설정 (예: 10000 블록 단위)
 commit_interval: 10000
-config: /var/lib/ord/ord.yaml
-config_dir: /var/lib/ord
-cookie_file: /var/lib/bitcoin/.cookie
-data_dir: /var/lib/ord
+
+# 현재 ord 설정 파일의 경로
+config: /Users/limjaeseung/Desktop/ord/ord.yaml
+
+# ord 설정 디렉토리 경로
+config_dir: /Users/limjaeseung/Desktop/ord
+
+# ord 데이터 디렉토리 경로
+data_dir: /Users/limjaeseung/Desktop/ord
+
+# ord가 처음 인스크립션을 시작할 블록 높이
 first_inscription_height: 100
+
+# 처리할 블록의 최대 높이 제한
 height_limit: 1000
+
+# 숨길 특정 트랜잭션 ID 목록
 hidden:
-- 6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0
-- 703e5f7c49d82aab99e605af306b9a30e991e57d42f982908a962a81ac439832i0
-index: /var/lib/ord/index.redb
-index_addresses: true
+  - 6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0
+  - 703e5f7c49d82aab99e605af306b9a30e991e57d42f982908a962a81ac439832i0
+
+# 인덱스 파일 경로
+index: /Users/limjaeseung/Desktop/ord/index.redb
+
+# 인덱스 캐시 크기 설정 (바이트 단위)
 index_cache_size: 1000000000
+
+# 룬 인덱싱 활성화
 index_runes: true
+
+# 사토시 인덱싱 활성화
 index_sats: true
+
+# 사용된 사토시 인덱싱 활성화
 index_spent_sats: true
+
+# 트랜잭션 인덱싱 활성화
 index_transactions: true
+
+# 통합 테스트 모드 활성화
 integration_test: true
+
+# 인스크립션 인덱싱 비활성화
 no_index_inscriptions: true
+
+# ord 서버 접근을 위한 비밀번호
 server_password: bar
+
+# ord 서버 URL
 server_url: http://localhost:8888
+
+# ord 서버 접근을 위한 사용자 이름
 server_username: foo
+
+

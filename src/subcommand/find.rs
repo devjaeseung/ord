@@ -18,7 +18,7 @@ pub struct FindRangeOutput {
   pub start: u64,
   pub size: u64,
   pub satpoint: SatPoint,
-}
+}//
 
 impl Find {
   pub(crate) fn run(self, settings: Settings) -> SubcommandResult {

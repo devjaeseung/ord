@@ -1,5 +1,5 @@
 use super::*;
-
+//
 #[derive(Serialize)]
 struct Label {
   first_sat: SatLabel,

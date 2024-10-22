@@ -31,7 +31,7 @@ pub(crate) fn run(settings: Settings) -> SubcommandResult {
     index.has_rune_index(),
     "`ord runes` requires index created with `--index-runes` flag",
   );
-
+//
   index.update()?;
 
   Ok(Some(Box::new(Output {

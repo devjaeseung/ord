@@ -42,3 +42,4 @@ pub(crate) fn run(wallet: Wallet) -> SubcommandResult {
 
   Ok(Some(Box::new(runic_utxos)))
 }
+//

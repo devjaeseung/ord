@@ -1,4 +1,0 @@
-cargo:rustc-env=GIT_BRANCH=jaeseung_local
-
-cargo:rustc-env=GIT_COMMIT=cc40344297df2d47f483742523dcef17cd5ed096
-

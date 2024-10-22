@@ -19,3 +19,4 @@ pub(crate) fn run(settings: Settings) -> SubcommandResult {
     runes: index.get_rune_balance_map()?,
   })))
 }
+//

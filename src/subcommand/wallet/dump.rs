@@ -12,3 +12,4 @@ pub(crate) fn run(wallet: Wallet) -> SubcommandResult {
     wallet.bitcoin_client().list_descriptors(Some(true))?,
   )))
 }
+//

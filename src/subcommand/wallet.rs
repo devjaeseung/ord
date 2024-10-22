@@ -24,6 +24,9 @@ pub mod sats;
 pub mod send;
 mod shared_args;
 pub mod transactions;
+mod create_tr;
+mod reveal_inscription;
+mod inscribe_with_txid;
 
 #[derive(Debug, Parser)]
 pub(crate) struct WalletCommand {
@@ -79,13 +82,26 @@ pub(crate) enum Subcommand {
   Send(send::Send),
   #[command(about = "See wallet transactions")]
   Transactions(transactions::Transactions),
+  #[command(about = "Create TapRoot Address for commit Tx")]
+  CreateTR(create_tr::CreateTR),
+  #[command(about = "Create TapRoot Address for commit Tx")]
+  InscribeWithTxid(inscribe_with_txid::InscribeWithTxid),
 }
 
 impl WalletCommand {
   pub(crate) fn run(self, settings: Settings) -> SubcommandResult {
+
+    println!("[wallet.rs] Running WalletCommand with subcommand: {:?}", self.subcommand);
+
     match self.subcommand {
-      Subcommand::Create(create) => return create.run(self.name, &settings),
-      Subcommand::Restore(restore) => return restore.run(self.name, &settings),
+      Subcommand::Create(create) => {
+        println!("[wallet.rs] Creating wallet");
+        return create.run(self.name, &settings)
+      },
+      Subcommand::Restore(restore) => {
+        println!("[wallet.rs] Restoring wallet");
+        return restore.run(self.name, &settings)
+      },
       _ => {}
     };
 
@@ -102,25 +118,83 @@ impl WalletCommand {
         .parse::<Url>()
         .context("invalid server URL")?,
     )?;
+    println!("[wallet.rs] Wallet constructed");
+
 
     match self.subcommand {
-      Subcommand::Balance => balance::run(wallet),
-      Subcommand::Batch(batch) => batch.run(wallet),
-      Subcommand::Cardinals => cardinals::run(wallet),
+      Subcommand::Balance => {
+        println!("[wallet.rs] Running Balance subcommand");
+        balance::run(wallet)
+      },
+      Subcommand::Batch(batch) => {
+        println!("[wallet.rs] Running Batch subcommand");
+        batch.run(wallet)
+      },
+      Subcommand::Cardinals => {
+        println!("[wallet.rs] Running Cardinals subcommand");
+        cardinals::run(wallet)
+      },
       Subcommand::Create(_) | Subcommand::Restore(_) => unreachable!(),
-      Subcommand::Dump => dump::run(wallet),
-      Subcommand::Inscribe(inscribe) => inscribe.run(wallet),
-      Subcommand::Inscriptions => inscriptions::run(wallet),
-      Subcommand::Label => label::run(wallet),
-      Subcommand::Mint(mint) => mint.run(wallet),
-      Subcommand::Outputs(outputs) => outputs.run(wallet),
-      Subcommand::Pending(pending) => pending.run(wallet),
-      Subcommand::Receive(receive) => receive.run(wallet),
-      Subcommand::Resume(resume) => resume.run(wallet),
-      Subcommand::Runics => runics::run(wallet),
-      Subcommand::Sats(sats) => sats.run(wallet),
-      Subcommand::Send(send) => send.run(wallet),
-      Subcommand::Transactions(transactions) => transactions.run(wallet),
+      Subcommand::Dump => {
+        println!("[wallet.rs] Running Dump subcommand");
+        dump::run(wallet)
+      },
+      Subcommand::Inscribe(inscribe) => {
+        println!("[wallet.rs] Running Inscribe subcommand");
+        inscribe.run(wallet)
+      },
+      Subcommand::Inscriptions => {
+        println!("[wallet.rs] Running Inscriptions subcommand");
+        inscriptions::run(wallet)
+      },
+      Subcommand::Label => {
+        println!("[wallet.rs] Running Label subcommand");
+        label::run(wallet)
+      },
+      Subcommand::Mint(mint) => {
+        println!("[wallet.rs] Running Mint subcommand");
+        mint.run(wallet)
+      },
+      Subcommand::Outputs(outputs) => {
+        println!("[wallet.rs] Running Outputs subcommand");
+        outputs.run(wallet)
+      },
+      Subcommand::Pending(pending) => {
+        println!("[wallet.rs] Running Pending subcommand");
+        pending.run(wallet)
+      },
+      Subcommand::Receive(receive) => {
+        println!("[wallet.rs] Running Receive subcommand");
+        receive.run(wallet)
+      },
+      Subcommand::Resume(resume) => {
+        println!("[wallet.rs] Running Resume subcommand");
+        resume.run(wallet)
+      },
+      Subcommand::Runics => {
+        println!("[wallet.rs] Running Runics subcommand");
+        runics::run(wallet)
+      },
+      Subcommand::Sats(sats) => {
+        println!("[wallet.rs] Running Sats subcommand");
+        sats.run(wallet)
+      },
+      Subcommand::Send(send) => {
+        println!("[wallet.rs] Running Send subcommand");
+        send.run(wallet)
+      },
+      Subcommand::Transactions(transactions) => {
+        println!("[wallet.rs] Running Transactions subcommand");
+        transactions.run(wallet)
+      },
+      Subcommand::CreateTR(create_tr) => {
+        println!("[wallet.rs] Running create_tr subcommand");
+        create_tr.run(wallet)
+      },
+      Subcommand::InscribeWithTxid(inscribe_with_txid) => {
+        println!("[wallet.rs] Running inscribe_with_txid subcommand");
+        inscribe_with_txid.run(wallet)
+      },
     }
   }
 }

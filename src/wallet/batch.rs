@@ -15,6 +15,7 @@ use {
 };
 
 pub(crate) use transactions::Transactions;
+pub(crate) use revealTransaction::RevealTransaction;
 
 pub use {
   entry::Entry, etching::Etching, file::File, mode::Mode, plan::Plan, range::Range, terms::Terms,
@@ -28,6 +29,8 @@ pub mod plan;
 mod range;
 mod terms;
 mod transactions;
+
+mod revealTransaction;
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Output {

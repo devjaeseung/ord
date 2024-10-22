@@ -5,7 +5,7 @@ pub struct CardinalUtxo {
   pub output: OutPoint,
   pub amount: u64,
 }
-
+//
 pub(crate) fn run(wallet: Wallet) -> SubcommandResult {
   let unspent_outputs = wallet.utxos();
 

@@ -11,6 +11,7 @@
   clippy::cast_sign_loss
 )]
 
+//use log::{info, log};
 use {
   self::{
     arguments::Arguments,
@@ -93,6 +94,7 @@ pub use self::{
   object::Object,
   options::Options,
   wallet::transaction_builder::{Target, TransactionBuilder},
+  
 };
 
 #[cfg(test)]
@@ -173,7 +175,7 @@ fn fund_raw_transaction(
             bitcoincore_rpc::jsonrpc::error::RpcError { code: -6, .. }
           ))
         ) {
-          anyhow!("not enough cardinal utxos")
+          anyhow!("[lib.rs] not enough cardinal utxos")
         } else {
           err.into()
         }
@@ -220,9 +222,9 @@ pub fn parse_ord_server_args(args: &str) -> (Settings, subcommand::server::Serve
         .unwrap(),
         server,
       ),
-      subcommand => panic!("unexpected subcommand: {subcommand:?}"),
+      subcommand => panic!("[lib.rs] unexpected subcommand: {subcommand:?}"),
     },
-    Err(err) => panic!("error parsing arguments: {err}"),
+    Err(err) => panic!("[lib.rs] error parsing arguments: {err}"),
   }
 }
 
@@ -237,21 +239,23 @@ pub fn shut_down() {
 fn gracefully_shut_down_indexer() {
   if let Some(indexer) = INDEXER.lock().unwrap().take() {
     shut_down();
-    log::info!("Waiting for index thread to finish...");
+    log::info!("[lib.rs] Waiting for index thread to finish...");
     if indexer.join().is_err() {
-      log::warn!("Index thread panicked; join failed");
+      log::warn!("[lib.rs] Index thread panicked; join failed");
     }
   }
 }
 
 pub fn main() {
+  //println!("[lib.rs] Starting Ordinals...로그찍기 성공!"); // 이 줄을 추가
   env_logger::init();
+  println!("[lib.rs] Starting Ordinals...로그찍기 성공!");
   ctrlc::set_handler(move || {
     if SHUTTING_DOWN.fetch_or(true, atomic::Ordering::Relaxed) {
       process::exit(1);
     }
 
-    eprintln!("Shutting down gracefully. Press <CTRL-C> again to shutdown immediately.");
+    eprintln!("[lib.rs] Shutting down gracefully. Press <CTRL-C> again to shutdown immediately.");
 
     LISTENERS
       .lock()
@@ -261,24 +265,27 @@ pub fn main() {
 
     gracefully_shut_down_indexer();
   })
-  .expect("Error setting <CTRL-C> handler");
+  .expect("[lib.rs] Error setting <CTRL-C> handler");
 
   let args = Arguments::parse();
 
   let format = args.options.format;
 
+  println!("[lib.rs] args.format : {:?}", format); // 이 줄을 추가
+  println!("[lib.rs] args : {:?}", args); // 이 줄을 추가
+
   match args.run() {
     Err(err) => {
-      eprintln!("error: {err}");
+      eprintln!("[lib.rs] error: {err}");
 
       if let SnafuError::Anyhow { err } = err {
         for (i, err) in err.chain().skip(1).enumerate() {
           if i == 0 {
             eprintln!();
-            eprintln!("because:");
+            eprintln!("[lib.rs] because:");
           }
 
-          eprintln!("- {err}");
+          eprintln!("[lib.rs] - {err}");
         }
 
         if env::var_os("RUST_BACKTRACE")
@@ -291,7 +298,7 @@ pub fn main() {
         for (i, err) in err.iter_chain().skip(1).enumerate() {
           if i == 0 {
             eprintln!();
-            eprintln!("because:");
+            eprintln!("[lib.rs] because:");
           }
 
           eprintln!("- {err}");
@@ -299,7 +306,7 @@ pub fn main() {
 
         if let Some(backtrace) = err.backtrace() {
           if backtrace.status() == BacktraceStatus::Captured {
-            eprintln!("backtrace:");
+            eprintln!("[lib.rs] backtrace:");
             eprintln!("{backtrace}");
           }
         }

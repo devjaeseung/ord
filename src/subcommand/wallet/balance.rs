@@ -1,5 +1,5 @@
 use super::*;
-
+//
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Output {
   pub cardinal: u64,

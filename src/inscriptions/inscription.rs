@@ -10,18 +10,18 @@ use {
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq, Default)]
 pub struct Inscription {
-  pub body: Option<Vec<u8>>,
-  pub content_encoding: Option<Vec<u8>>,
-  pub content_type: Option<Vec<u8>>,
-  pub delegate: Option<Vec<u8>>,
-  pub duplicate_field: bool,
-  pub incomplete_field: bool,
-  pub metadata: Option<Vec<u8>>,
-  pub metaprotocol: Option<Vec<u8>>,
-  pub parents: Vec<Vec<u8>>,
-  pub pointer: Option<Vec<u8>>,
-  pub rune: Option<Vec<u8>>,
-  pub unrecognized_even_field: bool,
+  pub body: Option<Vec<u8>>, // 인스크립션의 본문 데이터
+  pub content_encoding: Option<Vec<u8>>, // 인스크립션의 콘텐츠 인코딩 정보
+  pub content_type: Option<Vec<u8>>, // 인스크립션의 콘텐츠 타입 정보
+  pub delegate: Option<Vec<u8>>, // 인스크립션 대리자 정보
+  pub duplicate_field: bool, // 중복 필드 여부
+  pub incomplete_field: bool, // 불완전 필드 여부
+  pub metadata: Option<Vec<u8>>, // 인스크립션 메타데이터
+  pub metaprotocol: Option<Vec<u8>>, // 메타프로토콜 정보
+  pub parents: Vec<Vec<u8>>, // 부모 인스크립션 ID 목록
+  pub pointer: Option<Vec<u8>>, // 포인터 정보
+  pub rune: Option<Vec<u8>>, // 룬 정보
+  pub unrecognized_even_field: bool, // 인식되지 않은 짝수 필드 여부
 }
 
 impl Inscription {
@@ -36,15 +36,21 @@ impl Inscription {
     pointer: Option<u64>,
     rune: Option<Rune>,
   ) -> Result<Self, Error> {
-    let path = path.as_ref();
+    let path = path.as_ref(); // 파일 경로를 참조로 변환합니다.
+    println!("[inscriptions.rs] File path: {:?}", path);
 
+    // 본문, 콘텐츠 타입 및 콘텐츠 인코딩 정보를 설정
     let (body, content_type, content_encoding) = if let Some(path) = path {
       let body = fs::read(path).with_context(|| format!("io error reading {}", path.display()))?;
+      println!("[inscriptions.rs] Read file at path: {:?}", path);
 
       let content_type = Media::content_type_for_path(path)?.0;
+      println!("[inscriptions.rs] Determined content type: {:?}", content_type);
 
       let (body, content_encoding) = if compress {
         let compression_mode = Media::content_type_for_path(path)?.1;
+        println!("[inscriptions.rs] Compression mode: {:?}", compression_mode);
+        
         let mut compressed = Vec::new();
 
         {
@@ -61,13 +67,16 @@ impl Inscription {
             },
           )
           .write_all(&body)?;
-
+          println!("[inscriptions.rs] Compressed body data");
+          
           let mut decompressor = brotli::Decompressor::new(compressed.as_slice(), compressed.len());
 
           let mut decompressed = Vec::new();
 
           decompressor.read_to_end(&mut decompressed)?;
 
+          println!("[inscriptions.rs] Decompressed body data");
+          
           ensure!(decompressed == body, "decompression roundtrip failed");
         }
 
@@ -87,6 +96,10 @@ impl Inscription {
         }
       }
 
+      println!("[inscriptions.rs] body : {:?}",body);
+      println!("[inscriptions.rs] content_type : {:?}",content_type);
+      println!("[inscriptions.rs] content_encoding : {:?}",content_encoding);
+      
       (Some(body), Some(content_type), content_encoding)
     } else {
       (None, None, None)
@@ -108,7 +121,7 @@ impl Inscription {
 
   pub fn pointer_value(pointer: u64) -> Vec<u8> {
     let mut bytes = pointer.to_le_bytes().to_vec();
-
+    println!("[inscriptions.rs] Converted pointer to little-endian bytes: {:?}", bytes);
     while bytes.last().copied() == Some(0) {
       bytes.pop();
     }
@@ -124,6 +137,7 @@ impl Inscription {
       .push_opcode(opcodes::OP_FALSE)
       .push_opcode(opcodes::all::OP_IF)
       .push_slice(envelope::PROTOCOL_ID);
+    println!("[inscriptions.rs] Initialized script builder with protocol ID");
 
     Tag::ContentType.append(&mut builder, &self.content_type);
     Tag::ContentEncoding.append(&mut builder, &self.content_encoding);
@@ -133,6 +147,7 @@ impl Inscription {
     Tag::Pointer.append(&mut builder, &self.pointer);
     Tag::Metadata.append(&mut builder, &self.metadata);
     Tag::Rune.append(&mut builder, &self.rune);
+    println!("[inscriptions.rs] Appended all fields to script builder");
 
     if let Some(body) = &self.body {
       builder = builder.push_slice(envelope::BODY_TAG);
@@ -157,6 +172,8 @@ impl Inscription {
       builder = inscription.append_reveal_script_to_builder(builder);
     }
 
+    println!("[inscriptions.rs] Appended batch reveal script to builder");
+    
     builder
   }
 
